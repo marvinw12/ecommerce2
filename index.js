@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const usersRepo = require('./repositories/users')
+const usersRepo = require('./repositories/users');
 
 const app = express();
 
@@ -20,15 +20,20 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', async (req, res) => {
-  const {email, password, passwordConfirmation} = req.body;
+  const { email, password, passwordConfirmation } = req.body;
 
   const existingUser = await usersRepo.getOneBy({ email });
-  if(existingUser) {
+  if (existingUser) {
     return res.send('Email in use');
   }
-  if(password !== passwordConfirmation) {
+  if (password !== passwordConfirmation) {
     return res.send('Passwords must match');
   }
+
+  // Create a user in our user repo to represent this person
+  const user = await usersRepo.create({ email, password});
+  //Store the id of that user inside the users cookie
+
   res.send('Account Created');
 });
 
