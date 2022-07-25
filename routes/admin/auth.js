@@ -11,7 +11,11 @@ router.get('/signup', (req, res) => {
     res.send(signupTemplate({ req }));
   });
   
-  router.post('/signup', async (req, res) => {
+  router.post('/signup', body('email').isEmail(), body('password').isLength({ min: 8}), body('passwordConfirmation').custom((value, { req }) => {
+    if(value !== req.body.password) {
+      throw new Error('Password confirmation does not match password')
+    } return true;
+  }), async (req, res) => {
     const { email, password, passwordConfirmation } = req.body;
   
     const existingUser = await usersRepo.getOneBy({ email });
