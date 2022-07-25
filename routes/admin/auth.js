@@ -13,15 +13,12 @@ router.get("/signup", (req, res) => {
 
 router.post(
   "/signup",
-  body("email").isEmail(),
-  body("password").isLength({ min: 8 }),
-  body("passwordConfirmation").custom((value, { req }) => {
-    if (value !== req.body.password) {
-      throw new Error("Password confirmation does not match password");
-    }
-    return true;
-  }),
+  body("email").trim().normalizeEmail().isEmail(),
+  body("password").trim().isLength({ min: 8, max: 20 }),
+  body("passwordConfirmation").trim().isLength({ min: 4, max: 20 }),
   async (req, res) => {
+    const errors = validationResult(req);
+    console.log(errors);
     const { email, password, passwordConfirmation } = req.body;
 
     const existingUser = await usersRepo.getOneBy({ email });
