@@ -1,5 +1,5 @@
 module.exports = ({ content }) => {
-    return `
+  return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -7,5 +7,5 @@ module.exports = ({ content }) => {
     <body>
         ${content}
     </body>
-    </html>`
-}
+    </html>`;
+};
