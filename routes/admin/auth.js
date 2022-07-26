@@ -8,6 +8,8 @@ const {
   requireEmail,
   requirePassword,
   requirePasswordConfirmation,
+  requireEmailExists,
+  requireValidUserPassword,
 } = require('./validators');
 
 const router = express.Router();
@@ -21,6 +23,7 @@ router.post(
   [requireEmail, requirePassword, requirePasswordConfirmation],
   async (req, res) => {
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.send(signupTemplate({ req, errors }));
     }
@@ -45,23 +48,11 @@ router.get('/signin', (req, res) => {
 
 router.post(
   '/signin',
-  [
-    check('email')
-      .trim()
-      .normalizeEmail()
-      .isEmail()
-      .withMessage('Please provide a valid email')
-      .custom(async (email) => {
-        const user = await usersRepo.getOneBy({ email });
-        if (!user) {
-          throw new Error('Email not found');
-        }
-      }),
-    check('password').trim(),
-  ],
+  [requireEmailExists, requireValidUserPassword],
   async (req, res) => {
     const errors = validationResult(req);
     console.log(errors);
+
     const { email, password } = req.body;
 
     const user = await usersRepo.getOneBy({ email });
