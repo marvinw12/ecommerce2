@@ -5,7 +5,7 @@ const authRouter = require("./routes/admin/auth");
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(
   cookieSession({
     keys: ["eirufnefiun23edn"],
